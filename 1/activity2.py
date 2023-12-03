@@ -1,5 +1,7 @@
 #!/bin/usr/python3
-#aoe2023 activity 1
+#aoe2023 activity 2
+
+# Answer > 53825
 
 f = open("input.txt", "r")
 
@@ -31,17 +33,19 @@ for line in f.readlines():
         print("***LINE*** ", line_counter, " | ", line.strip("\n"))
         line_counter += 1
         print("*********")
-        sleep(0.5)
+        #sleep(0.5)
         
     # find the first digit / number value
     #  keep it's index for later...
     i = 0
+
+    line = line.strip("\n")
     length = len(line)
 
     n1 = "0"
     n1_i = length
     n2 = "0"
-    n2_i = 0
+    n2_i = 0    
 
     # check for digits from the start
     while (i < length):
@@ -89,14 +93,16 @@ for line in f.readlines():
         # check from the end
         if (length - len(dups[-1])) > n2_i:
             n2 = digits[word]
-            n2_i = (length - len(dups[-1])) + (len(word)-1)
+            n2_i = (length - len(dups[-1])) #+ (len(word) - 1)
             if DEBUG: print("found end: ", n2, n2_i)
 
             
     
     #sys.exit(0)
     if DEBUG: print("Digits: ", n1, n2, " (after)")
-    numbers.append(int(n1 + n2))
+    s = str(n1) + str(n2)
+    numbers.append(int(s))
+    #sys.exit(0)
 
 # add up all codes
 answer = 0
