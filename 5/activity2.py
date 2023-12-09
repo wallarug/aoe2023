@@ -2,7 +2,7 @@
 # Day 5: Advent of Code, Part 2
 
 # Higher than: 
-# Less than: 72263013
+# Less than: 72263011
 # wrong: 
 # correct: 
 
@@ -141,22 +141,36 @@ counter = 0
 results = [None] * 10
 threads = [None] * 10
 
+def check_seed(seed, maps):
+    soil_location = maps["seed-to-soil"].find_destination(seed)
+    fertilizer_location = maps["soil-to-fertilizer"].find_destination(soil_location)
+    water_location = maps["fertilizer-to-water"].find_destination(fertilizer_location)
+    light_location = maps["water-to-light"].find_destination(water_location)
+    temperature_location = maps["light-to-temperature"].find_destination(light_location)
+    humidity_location = maps["temperature-to-humidity"].find_destination(temperature_location)
+    location = maps["humidity-to-location"].find_destination(humidity_location)
+    return location
+
 # Multi-threaded version
 def compute_seed(tid, seed_pair, maps, results): 
     # using: maps, results, seed_pair
     local_lowest_location = 999999999999999999999999999999999999
     print("Starting thread: ", tid)
-    for seed in range(seed_pair.start, seed_pair.end, 1):
-        soil_location = maps["seed-to-soil"].find_destination(seed)
-        fertilizer_location = maps["soil-to-fertilizer"].find_destination(soil_location)
-        water_location = maps["fertilizer-to-water"].find_destination(fertilizer_location)
-        light_location = maps["water-to-light"].find_destination(water_location)
-        temperature_location = maps["light-to-temperature"].find_destination(light_location)
-        humidity_location = maps["temperature-to-humidity"].find_destination(temperature_location)
-        location = maps["humidity-to-location"].find_destination(humidity_location)
+    for seed in range(seed_pair.start, seed_pair.end, 1000):
+        location = check_seed(seed, maps)
 
         if location < local_lowest_location:
             local_lowest_location = location
+            print("New Lowest: ", local_lowest_location, " from seed: ", seed)
+            print("Start fine-grained search")
+            lseed = seed
+            for k in range(seed - 999, seed):
+                l2 = check_seed(k, maps)
+                if l2 < local_lowest_location:
+                    local_lowest_location = l2
+                    print("found new! loc: ", l2, " from seed: ", seed)
+            print("End fine-grained search with lowest: ", local_lowest_location)
+                
     
     results[tid] = local_lowest_location
     print("Ending thread: ", tid)
@@ -173,6 +187,7 @@ for seed_pair in seeds:
 
 threads[1].join()
 print("Result for thread 1: ", results[1])
+exit()
 
 # find the lowest location
 print(results)
