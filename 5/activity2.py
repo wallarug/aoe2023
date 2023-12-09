@@ -2,7 +2,7 @@
 # Day 5: Advent of Code, Part 2
 
 # Higher than: 
-# Less than: 
+# Less than: 72263013
 # wrong: 
 # correct: 
 
@@ -130,10 +130,51 @@ for line in f.readlines():
     current_map.add_to_map(int(data[1]), int(data[0]), int(data[2]))
     continue
 
+# close the file
+f.close()
+
 # Phase 2 - actually working out the seed locations
 lowest_location = 999999999999999999999999999999999999
 lowest_seed = 0
 counter = 0
+
+results = [None] * 10
+threads = [None] * 10
+
+# Multi-threaded version
+def compute_seed(tid, seed_pair, maps, results): 
+    # using: maps, results, seed_pair
+    local_lowest_location = 999999999999999999999999999999999999
+    print("Starting thread: ", tid)
+    for seed in range(seed_pair.start, seed_pair.end, 500):
+        soil_location = maps["seed-to-soil"].find_destination(seed)
+        fertilizer_location = maps["soil-to-fertilizer"].find_destination(soil_location)
+        water_location = maps["fertilizer-to-water"].find_destination(fertilizer_location)
+        light_location = maps["water-to-light"].find_destination(water_location)
+        temperature_location = maps["light-to-temperature"].find_destination(light_location)
+        humidity_location = maps["temperature-to-humidity"].find_destination(temperature_location)
+        location = maps["humidity-to-location"].find_destination(humidity_location)
+
+        if location < local_lowest_location:
+            local_lowest_location = location
+    
+    results[tid] = local_lowest_location
+    print("Ending thread: ", tid)
+
+# start the threads
+counter = 0
+for seed_pair in seeds:
+    threads[counter] = Thread(target=compute_seed, args=(counter, seed_pair, maps, results))
+    threads[counter].start()
+    counter += 1
+
+for i in range(len(threads)):
+    threads[i].join()
+
+# find the lowest location
+print(results)
+print("Lowest Location: ", min(results))
+exit()
 
 for seed_pair in seeds:
     counter += 1
