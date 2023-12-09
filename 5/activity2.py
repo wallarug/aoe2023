@@ -141,22 +141,57 @@ counter = 0
 results = [None] * 10
 threads = [None] * 10
 
+def check_seed(seed, maps):
+    soil_location = maps["seed-to-soil"].find_destination(seed)
+    fertilizer_location = maps["soil-to-fertilizer"].find_destination(soil_location)
+    water_location = maps["fertilizer-to-water"].find_destination(fertilizer_location)
+    light_location = maps["water-to-light"].find_destination(water_location)
+    temperature_location = maps["light-to-temperature"].find_destination(light_location)
+    humidity_location = maps["temperature-to-humidity"].find_destination(temperature_location)
+    loc = maps["humidity-to-location"].find_destination(humidity_location)
+    return loc
+
+
 # Multi-threaded version
 def compute_seed(tid, seed_pair, maps, results): 
     # using: maps, results, seed_pair
     local_lowest_location = 999999999999999999999999999999999999
     print("Starting thread: ", tid)
-    for seed in range(seed_pair.start, seed_pair.end, 100):
-        soil_location = maps["seed-to-soil"].find_destination(seed)
-        fertilizer_location = maps["soil-to-fertilizer"].find_destination(soil_location)
-        water_location = maps["fertilizer-to-water"].find_destination(fertilizer_location)
-        light_location = maps["water-to-light"].find_destination(water_location)
-        temperature_location = maps["light-to-temperature"].find_destination(light_location)
-        humidity_location = maps["temperature-to-humidity"].find_destination(temperature_location)
-        location = maps["humidity-to-location"].find_destination(humidity_location)
+    seed = seed_pair.start
+    end = seed_pair.end
+    
+    prev = local_lowest_location
 
-        if location < local_lowest_location:
-            local_lowest_location = location
+    print("Running While Loop in thread: ", tid)
+    while(seed < end):
+        loc = check_seed(seed, maps)
+
+        # jumping method
+        jump = 10000
+        if loc > prev:
+            # jump forward by x
+            if seed + jump > end:
+                seed = end
+                print("[ {0} ] Jump to end".format(tid))
+            else:
+                seed += jump
+        elif loc < prev:
+            # we may have missed something, go back and check
+            print("[ {0} ] Searching Range...".format(tid))
+            seed -= jump/2
+            for i in range(jump):
+                loc = check_seed(seed+i, maps)
+                if loc < prev:
+                    seed += i
+                else:
+                    break
+            local_lowest_location = loc
+        
+        prev = loc
+
+        # if location < local_lowest_location:
+        #     local_lowest_location = location
+        #     previous_location = location
     
     results[tid] = local_lowest_location
     print("Ending thread: ", tid)
