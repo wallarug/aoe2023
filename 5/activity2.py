@@ -146,7 +146,7 @@ def compute_seed(tid, seed_pair, maps, results):
     # using: maps, results, seed_pair
     local_lowest_location = 999999999999999999999999999999999999
     print("Starting thread: ", tid)
-    for seed in range(seed_pair.start, seed_pair.end, 500):
+    for seed in range(seed_pair.start, seed_pair.end, 100):
         soil_location = maps["seed-to-soil"].find_destination(seed)
         fertilizer_location = maps["soil-to-fertilizer"].find_destination(soil_location)
         water_location = maps["fertilizer-to-water"].find_destination(fertilizer_location)
