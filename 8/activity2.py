@@ -113,37 +113,21 @@ for line in f.readlines():
 
 # Let's follow the map and see if we can reach "ZZZ"
 steps = 0
-future = []
 all_z = False
 
 while(all_z == False):
     d = directions.next()
-
-    # all_z = True
-
-    # for i in range(len(next_nodes)):
-    #     next[i] = map[next_nodes[i]].go(d)
-    #     if next[i][2] != "Z":
-    #         all_z = False
-
-    for node in next_nodes:
-        next = map[node].go(d)
-        future.append(next)
-
-    # Check if all future ends in "Z"
     all_z = True
-    for node in future:
-        if node[2] != "Z":
-            all_z = False
-            break
 
-    next_nodes = future
-    future = []
+    for i in range(len(next_nodes)):
+        next_nodes[i] = map[next_nodes[i]].go(d)
+        if next_nodes[i][2] != "Z":
+            all_z = False
+
     steps += 1
 
-    if steps % 1000 == 0:
+    if steps % 10000 == 0:
         print("Steps: ", steps)
-        print("Next nodes: ", next_nodes)
 
 # close the file
 f.close()
