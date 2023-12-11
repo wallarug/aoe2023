@@ -2,14 +2,15 @@
 # Day 8: Advent of Code (Part 2)
 
 # Higher than: 
-# Less than: 
+# Less than:  33414692793508173913740
 # wrong: 
-# correct: 
+# correct: 22289513667691
 
 from sys import exit
 DEBUG = False
 
 import os
+import math
 
 script_path = os.path.dirname(os.path.abspath(__file__))
 os.chdir(script_path)
@@ -114,26 +115,48 @@ for line in f.readlines():
 # Let's follow the map and see if we can reach "ZZZ"
 steps = 0
 all_z = False
+results = []
+i = 0
 
-while(all_z == False):
+while(len(next_nodes) > 0):
     d = directions.next()
     all_z = True
 
-    for i in range(len(next_nodes)):
+    l = len(next_nodes)
+    i = 0
+    while(i < l):
         next_nodes[i] = map[next_nodes[i]].go(d)
-        if next_nodes[i][2] != "Z":
-            all_z = False
+        if next_nodes[i][2] == "Z":
+            results.append(steps+1)
+            next_nodes.remove(next_nodes[i])
+            l = l - 1
+            print("FOUND A Z!!")
+            print("Next Nodes: ", next_nodes)
+            #exit()
+            continue
+        i += 1
 
     steps += 1
 
     if steps % 10000 == 0:
         print("Steps: ", steps)
+        print("Next Nodes: ", next_nodes)
 
 # close the file
 f.close()
 
+# Use LCM to find the answer
+def lcm(list):
+    lcm = 1
+    for i in list:
+        lcm = lcm*i//math.gcd(lcm, i)
+    return lcm
 
-print("Answer: ", steps)
+answer = lcm(results)
+
+print("Results: ", results)
+
+print("Answer: ", answer)
 exit()
 
 
