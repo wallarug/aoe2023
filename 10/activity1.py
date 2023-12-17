@@ -4,7 +4,7 @@
 # Higher than: 
 # Less than: 
 # wrong: 
-# correct: 
+# correct: 7093
 
 from sys import exit
 DEBUG = False
@@ -14,7 +14,7 @@ import math
 
 script_path = os.path.dirname(os.path.abspath(__file__))
 os.chdir(script_path)
-f = open("test.txt", "r")
+f = open("input.txt", "r")
 
 answer = 0
 grid = []
@@ -143,7 +143,7 @@ while (len(stack) > 0):
     # get the next square
     current_square = stack.pop(0)
 
-    print("Current square: ", current_square.symbol, " at ", current_square.row, ", ", current_square.column)
+    # print("Current square: ", current_square.symbol, " at ", current_square.row, ", ", current_square.column)
 
     # check if it's a dot
     if current_square.symbol == ".":
@@ -194,10 +194,10 @@ while (len(stack) > 0):
         distance = current_square.distance
 
 
-print("Grid: \n")
-print_grid(grid)
-print("Distances: \n")
-print_grid_distance(grid)
+# print("Grid: \n")
+# print_grid(grid)
+# print("Distances: \n")
+# print_grid_distance(grid)
 
 print("Start coords: ", start_coords)
 
