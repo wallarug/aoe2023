@@ -1,8 +1,8 @@
 #!/bin/usr/python3
 # Day 10: Advent of Code (Part 2)
 
-# Higher than: 234, 354
-# Less than: 
+# Higher than: 234, 354, 
+# Less than: 435
 # wrong: 
 # correct: 
 
@@ -235,32 +235,32 @@ in_out_grid = []
 current = "0"
 count = 0
 index = 0
+prev = ""
 for row in grid:
     in_out_grid.append([])
     index += 1
     for col in row:
-        if col.symbol == "F" and current == "0":
+        if col.symbol == "F":
             current = "I"
-
-        elif col.symbol == "L" and current == "I":
+        
+        elif col.symbol == "7":
             current = "0"
-    
-        elif col.symbol == "7" and current == "I":
-            current = "O"
 
-        elif col.symbol == "J" and current == "O":
+        elif col.symbol == "L":
             current = "I"
         
-        elif col.symbol == "|" and current == "0":
-            current == "I"
-        
-        elif col.symbol == "|" and current == "I":
-            current == "0"
+        elif col.symbol == "J":
+            current = "0"
+
+        elif col.symbol == "|":
+            if current == "I": current = "0"
+            else: current == "I"
         
         elif col.symbol == "." and current == "I":
             count += 1
 
         in_out_grid[index-1].append(current)
+        prev = col.symbol
 
 f.close()
 
